@@ -5,6 +5,7 @@ const TARGET_URL =
   "https://www.tiktok.com/music/Unhappy-birthday構文-7558119317473675265?is_from_webapp=1&sender_device=pc";
 
 (async () => {
+  // ===== Puppeteer 起動 =====
   const browser = await puppeteer.launch({
     args: ["--no-sandbox", "--disable-setuid-sandbox"],
     headless: "new",
@@ -12,7 +13,7 @@ const TARGET_URL =
 
   const page = await browser.newPage();
 
-  // TikTok対策：UA設定
+  // TikTok 対策：User-Agent
   await page.setUserAgent(
     "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 Chrome/120.0.0.0 Safari/537.36"
   );
@@ -22,19 +23,19 @@ const TARGET_URL =
     timeout: 60000,
   });
 
-  // 要素の存在を待つ
+  // 要素が出現するまで待つ
   await page.waitForSelector(
     'h2[data-e2e="music-video-count"]',
     { timeout: 60000 }
   );
 
-  // ★ 中身が空でなくなるまで待つ（重要）
+  // 中身が空でなくなるまで待つ（重要）
   await page.waitForFunction(() => {
     const el = document.querySelector('h2[data-e2e="music-video-count"]');
     return el && el.innerText && el.innerText.trim().length > 0;
   }, { timeout: 60000 });
 
-  // 視聴数取得
+  // テキスト取得（例: "750 videos"）
   const viewText = await page.$eval(
     'h2[data-e2e="music-video-count"]',
     el => el.innerText.trim()
@@ -44,26 +45,20 @@ const TARGET_URL =
 
   await browser.close();
 
+  // ===== "750 videos" → 750 に変換 =====
   const parseVideoCount = text => {
     if (!text) return null;
-  
-    // "750 videos" → 750
+
     const match = text.match(/([\d,.]+)/);
     if (!match) return null;
-  
+
     return Number(match[1].replace(/,/g, ""));
   };
-
 
   const videoCount = parseVideoCount(viewText);
 
   if (videoCount === null) {
     throw new Error("動画数の数値化に失敗しました: " + viewText);
-  }
-
-
-  if (viewCount === null) {
-    throw new Error("視聴数の数値化に失敗しました: " + viewText);
   }
 
   // ===== Notion =====
@@ -88,5 +83,5 @@ const TARGET_URL =
     },
   });
 
-  console.log("記録完了:", viewCount);
+  console.log("記録完了:", videoCount);
 })();
