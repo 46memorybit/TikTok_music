@@ -55,7 +55,12 @@ const TARGET_URL =
   };
 
 
-  const viewCount = parseViewCount(viewText);
+  const videoCount = parseVideoCount(viewText);
+
+  if (videoCount === null) {
+    throw new Error("動画数の数値化に失敗しました: " + viewText);
+  }
+
 
   if (viewCount === null) {
     throw new Error("視聴数の数値化に失敗しました: " + viewText);
@@ -74,8 +79,8 @@ const TARGET_URL =
       日付: {
         date: { start: new Date().toISOString() },
       },
-      視聴数: {
-        number: viewCount,
+      使用動画数: {
+        number: videoCount,
       },
       URL: {
         url: TARGET_URL,
