@@ -4,8 +4,7 @@ const { Client } = require("@notionhq/client");
 // ===== 対象音源URL（複数OK）=====
 const TARGET_URLS = [
   "https://www.tiktok.com/music/Unhappy-birthday構文-7558119317473675265?is_from_webapp=1&sender_device=pc",
-  // ここに追加していく
-  // "https://www.tiktok.com/music/xxxxx",
+  "https://www.tiktok.com/music/夏の近道-7194804609653671937?is_from_webapp=1&sender_device=pc",
 ];
 
 (async () => {
