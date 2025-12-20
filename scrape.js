@@ -22,11 +22,17 @@ const TARGET_URL =
     timeout: 60000,
   });
 
-  // 視聴数の要素を待つ
+  // 要素の存在を待つ
   await page.waitForSelector(
     'h2[data-e2e="music-video-count"]',
     { timeout: 60000 }
   );
+
+  // ★ 中身が空でなくなるまで待つ（重要）
+  await page.waitForFunction(() => {
+    const el = document.querySelector('h2[data-e2e="music-video-count"]');
+    return el && el.innerText && el.innerText.trim().length > 0;
+  }, { timeout: 60000 });
 
   // 視聴数取得
   const viewText = await page.$eval(
@@ -34,16 +40,29 @@ const TARGET_URL =
     el => el.innerText.trim()
   );
 
+  console.log("取得した表示文字:", viewText);
+
   await browser.close();
 
-  // 数値化（例: 1.2M → 1200000）
+  // 数値化（M / K / 万 対応）
   const parseViewCount = text => {
-    if (text.includes("M")) return Math.round(parseFloat(text) * 1_000_000);
-    if (text.includes("K")) return Math.round(parseFloat(text) * 1_000);
-    return Number(text.replace(/,/g, ""));
+    if (!text) return null;
+
+    const t = text.replace(/,/g, "").toUpperCase();
+
+    if (t.includes("M")) return Math.round(parseFloat(t) * 1_000_000);
+    if (t.includes("K")) return Math.round(parseFloat(t) * 1_000);
+    if (t.includes("万")) return Math.round(parseFloat(t) * 10_000);
+
+    const n = Number(t);
+    return Number.isNaN(n) ? null : n;
   };
 
   const viewCount = parseViewCount(viewText);
+
+  if (viewCount === null) {
+    throw new Error("視聴数の数値化に失敗しました: " + viewText);
+  }
 
   // ===== Notion =====
   const notion = new Client({
