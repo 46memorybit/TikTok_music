@@ -1,0 +1,9 @@
+{
+  "name": "tiktok-music-scraper",
+  "version": "1.0.0",
+  "private": true,
+  "dependencies": {
+    "@notionhq/client": "^2.2.14",
+    "puppeteer": "^23.0.0"
+  }
+}
