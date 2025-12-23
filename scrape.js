@@ -4,7 +4,6 @@ const { Client } = require("@notionhq/client");
 // ===== 対象音源URL（複数OK）=====
 const TARGET_URLS = [
   "https://www.tiktok.com/music/Unhappy-birthday構文-7558119317473675265?is_fromfrom_webapp=1&sender_device=pc",
-  /*
   "https://www.tiktok.com/music/I-want-tomorrow-to-come--Naeleck-Remix--7493415540019841041?is_fromfrom_webapp=1&sender_device=pc",
   "https://www.tiktok.com/music/ピッカーン-7423677961504000016?is_fromfrom_webapp=1&sender_device=pc",
   "https://www.tiktok.com/music/何歳の頃に戻りたいのか-7331938271423449090?is_fromfrom_webapp=1&sender_device=pc",
@@ -88,7 +87,7 @@ const TARGET_URLS = [
   "https://www.tiktok.com/music/真夏の大統領-7513804903967967249?is_fromfrom_webapp=1&sender_device=pc",
   "https://www.tiktok.com/music/一瞬の馬-7243630293147830273?is_fromfrom_webapp=1&sender_device=pc",
   "https://www.tiktok.com/music/ノンアルコール-7513805326497499153?is_fromfrom_webapp=1&sender_device=pc",
-  
+  /*
   "https://www.tiktok.com/music/無念-7194804609017120769?is_fromfrom_webapp=1&sender_device=pc",
   "https://www.tiktok.com/music/木枯らしは泣かない-7560565950526474256?is_fromfrom_webapp=1&sender_device=pc",
   "https://www.tiktok.com/music/I-will-be-7560565950526507024?is_fromfrom_webapp=1&sender_device=pc",
