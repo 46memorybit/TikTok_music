@@ -87,7 +87,7 @@ const TARGET_URLS = [
   "https://www.tiktok.com/music/真夏の大統領-7513804903967967249?is_fromfrom_webapp=1&sender_device=pc",
   "https://www.tiktok.com/music/一瞬の馬-7243630293147830273?is_fromfrom_webapp=1&sender_device=pc",
   "https://www.tiktok.com/music/ノンアルコール-7513805326497499153?is_fromfrom_webapp=1&sender_device=pc",
-  /*
+  
   "https://www.tiktok.com/music/無念-7194804609017120769?is_fromfrom_webapp=1&sender_device=pc",
   "https://www.tiktok.com/music/木枯らしは泣かない-7560565950526474256?is_fromfrom_webapp=1&sender_device=pc",
   "https://www.tiktok.com/music/I-will-be-7560565950526507024?is_fromfrom_webapp=1&sender_device=pc",
@@ -143,7 +143,7 @@ const TARGET_URLS = [
   "https://www.tiktok.com/music/やるしかないじゃん--OFF-VOCAL-ver--7515010215290456081?is_fromfrom_webapp=1&sender_device=pc",
   "https://www.tiktok.com/music/Interlude-5-7493409744615950353?is_fromfrom_webapp=1&sender_device=pc",
   "https://www.tiktok.com/music/本質的なこと--OFF-VOCAL-ver--7467475173823563777?is_fromfrom_webapp=1&sender_device=pc",
-  */
+  
 ];
 
 (async () => {
