@@ -5,7 +5,7 @@ const { Client } = require("@notionhq/client");
 const TARGET_URLS = [
   "https://www.tiktok.com/music/光源-7605167475690653713?is_from_webapp=1&sender_device=pc",
   "https://www.tiktok.com/music/The-growing-up-train-7600754478748600337?is_from_webapp=1&sender_device=pc",
-  "https://www.tiktok.com/music/Unhappy-birthday構文-7558119317473675265?is_fromfrom_webapp=1&sender_device=pc",
+  "https://www.tiktok.com/music/Unhappy-birthday構文-7558119317473675265?is_from_webapp=1&sender_device=pc",
   "https://www.tiktok.com/music/I-want-tomorrow-to-come--Naeleck-Remix--7493415540019841041?is_fromfrom_webapp=1&sender_device=pc",
   "https://www.tiktok.com/music/ピッカーン-7423677961504000016?is_fromfrom_webapp=1&sender_device=pc",
   "https://www.tiktok.com/music/何歳の頃に戻りたいのか-7331938271423449090?is_fromfrom_webapp=1&sender_device=pc",
