@@ -158,95 +158,105 @@ const TARGET_URLS = [
     auth: process.env.NOTION_TOKEN,
   });
 
+  // 🔹 pageをループ外で作成
+  const page = await browser.newPage();
+
+  await page.setUserAgent(
+    "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 Chrome/120.0.0.0 Safari/537.36"
+  );
+
+  // 🔹 bot判定対策
+  await page.setViewport({ width: 1280, height: 800 });
+  await page.evaluateOnNewDocument(() => {
+    Object.defineProperty(navigator, "webdriver", { get: () => false });
+  });
+
   for (const url of TARGET_URLS) {
-    const page = await browser.newPage();
+    try {
+      await page.goto(url, {
+        waitUntil: "networkidle2",
+        timeout: 180000,
+      });
 
-    await page.setUserAgent(
-      "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 Chrome/120.0.0.0 Safari/537.36"
-    );
+      // ===== 音源名取得 =====
+      await page.waitForSelector('h1[data-e2e="music-title"]', {
+        timeout: 180000,
+      });
 
-    await page.goto(url, {
-      waitUntil: "networkidle2",
-      timeout: 180000,
-    });
+      await page.waitForFunction(() => {
+        const el = document.querySelector('h1[data-e2e="music-title"]');
+        return el && el.innerText && el.innerText.trim().length > 0;
+      }, { timeout: 180000 });
 
-    // ===== 音源名（h1[data-e2e="music-title"]）取得 =====
-    await page.waitForSelector(
-      'h1[data-e2e="music-title"]',
-      { timeout: 180000 }
-    );
-    
-    await page.waitForFunction(() => {
-      const el = document.querySelector('h1[data-e2e="music-title"]');
-      return el && el.innerText && el.innerText.trim().length > 0;
-    }, { timeout: 180000 });
-    
-    const musicTitle = await page.$eval(
-      'h1[data-e2e="music-title"]',
-      el => el.innerText.trim()
-    );
+      const musicTitle = await page.$eval(
+        'h1[data-e2e="music-title"]',
+        el => el.innerText.trim()
+      );
 
-    // ===== 動画数取得 =====
-    await page.waitForSelector(
-      'h2[data-e2e="music-video-count"]',
-      { timeout: 180000 }
-    );
+      // ===== 動画数取得 =====
+      await page.waitForSelector('h2[data-e2e="music-video-count"]', {
+        timeout: 180000,
+      });
 
-    await page.waitForFunction(() => {
-      const el = document.querySelector('h2[data-e2e="music-video-count"]');
-      return el && el.innerText && el.innerText.trim().length > 0;
-    }, { timeout: 180000 });
+      await page.waitForFunction(() => {
+        const el = document.querySelector('h2[data-e2e="music-video-count"]');
+        return el && el.innerText && el.innerText.trim().length > 0;
+      }, { timeout: 180000 });
 
-    const viewText = await page.$eval(
-      'h2[data-e2e="music-video-count"]',
-      el => el.innerText.trim()
-    );
+      const viewText = await page.$eval(
+        'h2[data-e2e="music-video-count"]',
+        el => el.innerText.trim()
+      );
 
-    console.log("取得:", musicTitle, viewText);
+      console.log("取得:", musicTitle, viewText);
 
-    await page.close();
+      // ===== 数値化 =====
+      const parseVideoCount = text => {
+        if (!text) return null;
+        const match = text.match(/([\d,.]+)/);
+        if (!match) return null;
+        return Number(match[1].replace(/,/g, ""));
+      };
 
-    // ===== "750 videos" → 750 =====
-    const parseVideoCount = text => {
-      if (!text) return null;
-      const match = text.match(/([\d,.]+)/);
-      if (!match) return null;
-      return Number(match[1].replace(/,/g, ""));
-    };
+      const videoCount = parseVideoCount(viewText);
+      if (videoCount === null) {
+        throw new Error("動画数の数値化に失敗: " + viewText);
+      }
 
-    const videoCount = parseVideoCount(viewText);
-    if (videoCount === null) {
-      throw new Error("動画数の数値化に失敗: " + viewText);
-    }
-
-    // ===== Notion 保存 =====
-    await notion.pages.create({
-      parent: {
-        database_id: process.env.NOTION_DATABASE_ID,
-      },
-      properties: {
-        title: {
-          title: [
-            {
-              text: {
-                content: musicTitle,
+      // ===== Notion保存 =====
+      await notion.pages.create({
+        parent: {
+          database_id: process.env.NOTION_DATABASE_ID,
+        },
+        properties: {
+          title: {
+            title: [
+              {
+                text: { content: musicTitle },
               },
-            },
-          ],
+            ],
+          },
+          日付: {
+            date: { start: new Date().toISOString() },
+          },
+          使用動画数: {
+            number: videoCount,
+          },
+          URL: {
+            url,
+          },
         },
-        日付: {
-          date: { start: new Date().toISOString() },
-        },
-        使用動画数: {
-          number: videoCount,
-        },
-        URL: {
-          url,
-        },
-      },
-    });
+      });
 
-    console.log("Notion保存完了:", musicTitle, videoCount);
+      console.log("Notion保存完了:", musicTitle, videoCount);
+
+      // 🔹 レート制限対策
+      await new Promise(r => setTimeout(r, 400));
+
+    } catch (err) {
+      console.error("取得失敗:", url, err.message);
+      continue;
+    }
   }
 
   await browser.close();
