@@ -3,6 +3,8 @@ const { Client } = require("@notionhq/client");
 
 // ===== 対象音源URL（複数OK）=====
 const TARGET_URLS = [
+  "https://www.tiktok.com/music/コインランドリー-7640063832416667664?is_from_webapp=1&sender_device=pc",
+  "https://www.tiktok.com/music/ぐんまちゃんバ-7638934338852046849?is_from_webapp=1&sender_device=pc",
   "https://www.tiktok.com/music/Lonesome-rabbit-7637343996108834832?is_from_webapp=1&sender_device=pc",
   "https://www.tiktok.com/music/What's-KAZOKU-7626597456344647697?is_from_webapp=1&sender_device=pc",
   "https://www.tiktok.com/music/ドライフルーツ-7607761786352666640?is_from_webapp=1&sender_device=pc",
